@@ -1,0 +1,28 @@
+
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>project</title>
+    <link rel="stylesheet" href="{% static 'board/project.css' %}" />
+</head>
+<body>
+{% if curtain_create_form.errors %}
+    <p></p>
+{% endif %}
+
+<form method="post" >
+    {% csrf_token %}
+    {{ curtain_create_form }}
+    <button type="submit" class="button">
+        融資上限額　試算
+    </button>
+</form>
+
+<p><a href="{% url 'board:project' project_id %}">戻る</a></p>
+
+</body>
+</html>

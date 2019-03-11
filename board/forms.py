@@ -1,5 +1,5 @@
 from django import forms
-from .models import Card
+from .models import *
 
 
 class CardForm(forms.ModelForm):
@@ -12,3 +12,21 @@ class CardForm(forms.ModelForm):
             'card_order',
         }
 
+
+class CurtainForm(forms.ModelForm):
+
+    class Meta:
+        model = Curtain
+        fields = {
+            'project',
+            'curtain_name',
+        }
+
+
+class ProjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Project
+        fields = {
+            'project_name',
+        }

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>project_list</title>
+</head>
+<body>
+{% for project in projects %}
+<ul>
+    <li>{{ project.project_name }}: <a href="{% url 'board:project' project.id %}">{{ project.project_name }}</a></li>
+</ul>
+{% endfor %}
+</body>
+</html>

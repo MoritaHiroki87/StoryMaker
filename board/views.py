@@ -1,22 +1,59 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect, reverse
 from django.views import View
-from django.views.generic import TemplateView, FormView, ListView
-from .models import Project, Curtain, Card
+# from django.views.generic import TemplateView, FormView, ListView
+from .models import *
+from .forms import *
+from .services import get_card_list_as_json
 
 
-
-#class IndexView(TemplateView):
+# class IndexView(TemplateView):
 #    template_name = 'index.html'
+class ProjectListView(View):
+    template_name = 'board/project_list.html'
+
+    def get(self, request):
+        projects = Project.objects.all()
+        context = {'projects': projects}
+        return render(request, self.template_name, context)
+
 
 class ProjectView(View):
     template_name = 'board/project.html'
 
     def get(self, request, project_id):
+        cards = get_card_list_as_json(project_id)
+        print(cards)
         project = Project.objects.filter(pk=project_id)
-        cards = Card.objects.all()
+
         context = {'cards': cards,
-                   'project_name': project.project_name}
+                   'project': project[0]}
         return render(request, self.template_name, context)
+
+
+class CurtainCreateView(View):
+    template_name = 'board/curtain_create.html'
+
+    def get(self, request, project_id):
+        curtain_create_form = CurtainForm
+        context = {
+            'curtain_create_form': curtain_create_form,
+            'project_id': project_id,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, project_id):
+        curtain_create_form = CurtainForm(request.POST)
+        curtain_create_form.save()
+        return HttpResponseRedirect(reverse('board:curtain_create', args=(project_id,)))
+
+
+class CurtainEditView(View):
+    template_name = 'board/curtain_edit.html'
+
+    def get(self, request, curtain_id):
+        curtain = Curtain.objects.filter(pk=curtain_id)
+
+
 
 
 """
