@@ -4,6 +4,7 @@ from django.views import View
 from .models import *
 from .forms import *
 from .services import get_card_list_as_json
+from .view_models import *
 
 
 # class IndexView(TemplateView):
@@ -18,11 +19,15 @@ class ProjectListView(View):
 
 
 class ProjectView(View):
+    """
+    メインのボード画面。
+    プロジェクトの情報、幕、カードそれぞれ必要。
+    さらにプロジェクト切り替え、幕の作成・編集、カードの作成・編集へのリンクも必要。
+    """
     template_name = 'board/project.html'
 
     def get(self, request, project_id):
         cards = get_card_list_as_json(project_id)
-        print(cards)
         project = Project.objects.filter(pk=project_id)
 
         context = {'cards': cards,
@@ -30,30 +35,42 @@ class ProjectView(View):
         return render(request, self.template_name, context)
 
 
-class CurtainCreateView(View):
-    template_name = 'board/curtain_create.html'
+class CreateCurtainView(View):
+    template_name = 'board/create_curtain.html'
 
     def get(self, request, project_id):
-        curtain_create_form = CurtainForm
+        create_curtain_form = CurtainForm
         context = {
-            'curtain_create_form': curtain_create_form,
+            'create_curtain_form': create_curtain_form,
             'project_id': project_id,
         }
         return render(request, self.template_name, context)
 
     def post(self, request, project_id):
-        curtain_create_form = CurtainForm(request.POST)
-        curtain_create_form.save()
-        return HttpResponseRedirect(reverse('board:curtain_create', args=(project_id,)))
+        create_curtain_form = CurtainForm(request.POST)
+        if create_curtain_form.is_valid():
+            create_curtain_form.save()
+        return HttpResponseRedirect(reverse('board:create_curtain', args=(project_id,)))
 
 
-class CurtainEditView(View):
-    template_name = 'board/curtain_edit.html'
+class EditCurtainView(View):
+    template_name = 'board/edit_curtain.html'
 
     def get(self, request, curtain_id):
-        curtain = Curtain.objects.filter(pk=curtain_id)
+        curtain = Curtain.objects.get(pk=curtain_id)
+        curtain = CurtainViewModel(curtain)
+        edit_curtain_form = CurtainForm(instnce=curtain)
+        context = {
+            'edit_curtain_form': edit_curtain_form
+                   }
+        return render(request, self.template_name, context)
 
-
+    def post(self, request, curtain_id):
+        curtain = Curtain.objects.get(pk=curtain_id)
+        edit_curtain_form = CurtainForm(request.POST, instance=curtain)
+        if edit_curtain_form.is_valid():
+            edit_curtain_form.save()
+        return HttpResponseRedirect(reverse('board:edit_curtain', args=(curtain_id,)))
 
 
 """
