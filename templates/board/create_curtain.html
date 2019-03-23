@@ -18,11 +18,11 @@
     {% csrf_token %}
     {{ create_curtain_form }}
     <button type="submit" class="button">
-        融資上限額　試算
+        幕の作成
     </button>
 </form>
 
-<p><a href="{% url 'board:project' project_id %}">戻る</a></p>
+<p><a href="{% url 'board:project_board' project_id %}">戻る</a></p>
 
 </body>
 </html>
