@@ -8,6 +8,7 @@ urlpatterns = [
     path('<int:project_id>/', ProjectBoardView.as_view(), name='project_board'),
     path('<int:project_id>/new-curtain/', CreateCurtainView.as_view(), name='create_curtain'),
     path('<int:project_id>/<int:curtain_id>/', EditCurtainView.as_view(), name='edit_curtain'),
+    path('<int:project_id>/<int:curtain_id>/new-card/', CreateCardView.as_view(), name='create_card'),
     # path('kaeseru/', views.kaeseru, name='kaeseru'),
     # path('permission/', views.permission_error, name='permission_error'),
 ]

@@ -27,9 +27,7 @@
                         <a class="card-edit-btn" href="{ url 'board:card_edit' card.id %}">編集</a>
                         -->
                     {% endfor %}
-                <!--
-                        <a class="card-create-btn" href="{ url 'board:card_create' curtain_k.id %}">カードの作成</a>
-                        -->
+                        <a class="card-create-btn" href="{% url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}">カードの作成</a>
                 </div>
             </div>
         {% endfor %}
