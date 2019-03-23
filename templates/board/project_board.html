@@ -19,9 +19,7 @@
         {% for curtain in project.curtain_list %}
             <div class="curtain-area">
                 <p>{{ curtain.curtain_name }}</p>
-<!--
-                <a class="curtain-edit-btn" href="{ url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">編集</a>
--->
+                <a class="curtain-edit-btn" href="{% url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">編集</a>
                 <div class="card-container">
                     {% for card in curtain.card_list %}
                         <p class="card-name">{{ card.card_name }}</p>
@@ -37,7 +35,7 @@
         {% endfor %}
 
             <div>
-                <a class="curtian-create-btn" href="{% url 'board:create_curtain' project.project_id %}">幕の作成</a>
+                <a class="curtain-create-btn" href="{% url 'board:create_curtain' project.project_id %}">幕の作成</a>
             </div>
     </div>
 </div>

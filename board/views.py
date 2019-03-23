@@ -59,21 +59,22 @@ class CreateCurtainView(View):
 class EditCurtainView(View):
     template_name = 'board/edit_curtain.html'
 
-    def get(self, request, curtain_id):
+    def get(self, request, project_id, curtain_id):
         curtain = Curtain.objects.get(pk=curtain_id)
-        curtain = CurtainViewModel(curtain)
-        edit_curtain_form = CurtainForm(instnce=curtain)
+        # curtain = CurtainViewModel(curtain)
+        edit_curtain_form = CurtainForm(instance=curtain)
         context = {
-            'edit_curtain_form': edit_curtain_form
+            'edit_curtain_form': edit_curtain_form,
+            'project_id': project_id,
                    }
         return render(request, self.template_name, context)
 
-    def post(self, request, curtain_id):
+    def post(self, request, project_id, curtain_id):
         curtain = Curtain.objects.get(pk=curtain_id)
         edit_curtain_form = CurtainForm(request.POST, instance=curtain)
         if edit_curtain_form.is_valid():
             edit_curtain_form.save()
-        return HttpResponseRedirect(reverse('board:edit_curtain', args=(curtain_id,)))
+        return HttpResponseRedirect(reverse('board:edit_curtain', args=(project_id, curtain_id,)))
 
 
 """

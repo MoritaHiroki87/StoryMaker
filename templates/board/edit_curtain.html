@@ -1,0 +1,28 @@
+
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>project</title>
+    <link rel="stylesheet" href="{% static 'board/project.css' %}" />
+</head>
+<body>
+{% if edit_curtain_form.errors %}
+    <p></p>
+{% endif %}
+
+<form method="post" >
+    {% csrf_token %}
+    {{ edit_curtain_form }}
+    <button type="submit" class="button">
+        幕の編集
+    </button>
+</form>
+
+<p><a href="{% url 'board:project_board' project_id %}">戻る</a></p>
+
+</body>
+</html>
