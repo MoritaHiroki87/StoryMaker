@@ -2,27 +2,6 @@ from django import forms
 from .models import *
 
 
-class CardForm(forms.ModelForm):
-    """カードのフォーム"""
-    class Meta:
-        model = Card
-        fields = {
-            'card_name',
-            'card_detail',
-            'card_order',
-        }
-
-
-class CurtainForm(forms.ModelForm):
-
-    class Meta:
-        model = Curtain
-        fields = {
-            'project',
-            'curtain_name',
-        }
-
-
 class ProjectForm(forms.ModelForm):
 
     class Meta:
@@ -30,3 +9,17 @@ class ProjectForm(forms.ModelForm):
         fields = {
             'project_name',
         }
+
+
+class CurtainForm(forms.ModelForm):
+
+    class Meta:
+        model = Curtain
+        fields = '__all__'
+
+
+class CardForm(forms.ModelForm):
+    """カードのフォーム"""
+    class Meta:
+        model = Card
+        fields = '__all__'

@@ -17,7 +17,6 @@ class ProjectListView(View):
         # render関数は何を返しているのか？
         projects = Project.objects.all()
         context = {'projects': projects}
-
         return render(request, self.template_name, context)
 
 
@@ -31,10 +30,7 @@ class ProjectBoardView(View):
 
     def get(self, request, project_id):
         project = get_card_list_as_dict(project_id)
-        # project = Project.objects.filter(pk=project_id)
-
         context = {'project': project}
-                   # 'project': project[0]}
         return render(request, self.template_name, context)
 
 

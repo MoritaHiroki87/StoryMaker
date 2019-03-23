@@ -52,7 +52,7 @@ def get_card_list_as_dict(project_id):
     project_dic["project_name"] = project.project_name
 
     curtain_list = []
-    for curtain in Curtain.objects.filter(project=project):
+    for curtain in Curtain.objects.filter(project=project).order_by('order', 'pk'):
         curtain_dic = dict()
         curtain_dic["curtain_id"] = curtain.pk
         curtain_dic["curtain_name"] = curtain.curtain_name

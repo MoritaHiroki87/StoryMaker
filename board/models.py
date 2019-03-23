@@ -33,7 +33,7 @@ class Curtain(models.Model):
     curtain_name = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # order = models.IntegerField(default=)
+    order = models.IntegerField(default=1)
 
 
 class Card(models.Model):
