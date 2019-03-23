@@ -1,37 +1,40 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
 from django.views import View
 # from django.views.generic import TemplateView, FormView, ListView
 from .models import *
 from .forms import *
-from .services import get_card_list_as_json
+from .services import get_card_list_as_dict
 from .view_models import *
 
 
 # class IndexView(TemplateView):
 #    template_name = 'index.html'
+
 class ProjectListView(View):
     template_name = 'board/project_list.html'
 
     def get(self, request):
+        # render関数は何を返しているのか？
         projects = Project.objects.all()
         context = {'projects': projects}
+
         return render(request, self.template_name, context)
 
 
-class ProjectView(View):
+class ProjectBoardView(View):
     """
     メインのボード画面。
     プロジェクトの情報、幕、カードそれぞれ必要。
     さらにプロジェクト切り替え、幕の作成・編集、カードの作成・編集へのリンクも必要。
     """
-    template_name = 'board/project.html'
+    template_name = 'board/project_board.html'
 
     def get(self, request, project_id):
-        cards = get_card_list_as_json(project_id)
-        project = Project.objects.filter(pk=project_id)
+        project = get_card_list_as_dict(project_id)
+        # project = Project.objects.filter(pk=project_id)
 
-        context = {'cards': cards,
-                   'project': project[0]}
+        context = {'project': project}
+                   # 'project': project[0]}
         return render(request, self.template_name, context)
 
 
