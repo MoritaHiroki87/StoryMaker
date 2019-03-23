@@ -59,7 +59,7 @@ def get_card_list_as_dict(project_id):
 
         card_list = []
         # cardが存在しないときどう動くのか心配
-        for card in Card.objects.filter(curtain=curtain).order_by('card_order'):
+        for card in Card.objects.filter(curtain=curtain).order_by('card_order', 'pk'):
             card_dic = dict()
             card_dic["card_order"] = card.card_order
             card_dic["card_name"] = card.card_name
