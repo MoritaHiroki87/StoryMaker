@@ -38,7 +38,9 @@ class CreateCurtainView(View):
     template_name = 'board/create_curtain.html'
 
     def get(self, request, project_id):
-        create_curtain_form = CurtainForm
+        create_curtain_form = CurtainForm(initial={
+            'project': Project.objects.get(pk=project_id)
+        })
         context = {
             'create_curtain_form': create_curtain_form,
             'project_id': project_id,
@@ -77,7 +79,9 @@ class CreateCardView(View):
     template_name = 'board/create_card.html'
 
     def get(self, request, project_id, curtain_id):
-        create_card_form = CardForm
+        create_card_form = CardForm(initial={
+            'curtain': Curtain.objects.get(pk=curtain_id)
+        })
         context = {
             'create_card_form': create_card_form,
             'project_id': project_id,
@@ -91,27 +95,28 @@ class CreateCardView(View):
             create_card_form.save()
         return HttpResponseRedirect(reverse('board:create_card', args=(project_id, curtain_id,)))
 
-"""
-class EditCardView(View):
-    template_name = 'board/edit_curtain.html'
 
-    def get(self, request, project_id, curtain_id):
-        curtain = Curtain.objects.get(pk=curtain_id)
-        # curtain = CurtainViewModel(curtain)
-        edit_curtain_form = CurtainForm(instance=curtain)
+class EditCardView(View):
+    template_name = 'board/edit_card.html'
+
+    def get(self, request, project_id, curtain_id, card_id):
+        card = Card.objects.get(pk=card_id)
+        edit_card_form = CardForm(instance=card)
         context = {
-            'edit_curtain_form': edit_curtain_form,
+            'edit_card_form': edit_card_form,
             'project_id': project_id,
+            'curtain_id': curtain_id,
+            'card_id': card_id,
                    }
         return render(request, self.template_name, context)
 
-    def post(self, request, project_id, curtain_id):
-        curtain = Curtain.objects.get(pk=curtain_id)
-        edit_curtain_form = CurtainForm(request.POST, instance=curtain)
-        if edit_curtain_form.is_valid():
-            edit_curtain_form.save()
-        return HttpResponseRedirect(reverse('board:edit_curtain', args=(project_id, curtain_id,)))
-"""
+    def post(self, request, project_id, curtain_id, card_id):
+        card = Card.objects.get(pk=card_id)
+        edit_card_form = CardForm(request.POST, instance=card)
+        if edit_card_form.is_valid():
+            edit_card_form.save()
+        return HttpResponseRedirect(reverse('board:edit_card', args=(project_id, curtain_id, card_id,)))
+
 
 """
 class DashboardView(ListView):
