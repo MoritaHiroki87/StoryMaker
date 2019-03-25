@@ -1,0 +1,42 @@
+
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>project</title>
+    <link rel="stylesheet" href="{% static 'board/project.css' %}" />
+</head>
+<body>
+<div class="project-area">
+    <p>project_name: {{ project.project_name }}</p>
+    <a href="{% url 'board:project_list' %}">プロジェクト切り替え</a>
+</div>
+<div class="card-board-area">
+    <div class="curtain-container">
+        {% for curtain in project.curtain_list %}
+            <div class="curtain-area">
+                <p>{{ curtain.curtain_name }}</p>
+                <p><a class="curtain-edit-btn" href="{% url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">編集</a></p>
+                <p>-----------</p>
+                <div class="card-container">
+                    {% for card in curtain.card_list %}
+                        <p class="card-name">{{ card.card_name }}</p>
+                        <p><a class="card-edit-btn" href="{% url 'board:edit_card' project_id=project.project_id curtain_id=curtain.curtain_id card_id=card.card_id %}">編集</a></p>
+                    {% endfor %}
+                    <p>------------</p>
+                    <p><a class="card-create-btn" href="{% url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}">カードの作成</a></p>
+                </div>
+            </div>
+        {% endfor %}
+
+            <div class="curtain-area">
+                <a class="curtain-create-btn" href="{% url 'board:create_curtain' project.project_id %}">幕の作成</a>
+            </div>
+    </div>
+</div>
+
+</body>
+</html>
