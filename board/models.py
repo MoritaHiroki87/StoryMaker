@@ -48,7 +48,7 @@ class Card(models.Model):
     curtain = models.ForeignKey(Curtain, null=True, blank=True, on_delete=models.CASCADE)
     card_name = models.CharField(max_length=32)
     card_detail = models.TextField()
-    card_order = models.IntegerField(default=1)
+    order = models.IntegerField(default=1)
     # card_order = models.IntegerField(default=lambda: Card.objects.last('pk').pk + 1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

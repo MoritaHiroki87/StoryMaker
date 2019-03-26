@@ -1,4 +1,59 @@
 from .models import *
+from django.db.models import Q
+
+
+def edit_curtain_order(obj, pre_order):
+    """
+    :param obj: ユーザーPOSTのデータ（編集後）
+    :param pre_order: 編集前のorder
+    :return: なし
+    編集前後でorderを比較し、変更があれば処理。
+    処理の内容は前後で大きくなった/小さくなったによって内容が変わる。
+    また、今回変更したオブジェクトはここで追加で編集が起きないよう、クエリで弾く。
+    """
+    edited_order = obj.order
+    pre_obj = obj.pk
+    if edited_order < pre_order:
+        # ここでCurtainOBJからオブジェクト生成してるけど、どうにかCardからも生成できないかな？
+        curtains = Curtain.objects.filter(~Q(pk=pre_obj), order__gte=edited_order, order__lt=pre_order)
+        for curtain in curtains:
+            curtain.order += 1
+            curtain.save()
+    elif edited_order == pre_order:
+        print('なし')
+        return
+    else:
+        curtains = Curtain.objects.filter(~Q(pk=pre_obj), order__gt=pre_order, order__lte=edited_order)
+        for curtain in curtains:
+            curtain.order -= 1
+            curtain.save()
+
+
+def edit_card_order(obj, pre_order):
+    """
+    :param obj: ユーザーPOSTのデータ（編集後）
+    :param pre_order: 編集前のorder
+    :return: なし
+    編集前後でorderを比較し、変更があれば処理。
+    処理の内容は前後で大きくなった/小さくなったによって内容が変わる。
+    また、今回変更したオブジェクトはここで追加で編集が起きないよう、クエリで弾く。
+    """
+    edited_order = obj.order
+    pre_obj = obj.pk
+    if edited_order < pre_order:
+        # ここでCurtainOBJからオブジェクト生成してるけど、どうにかCardからも生成できないかな？
+        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gte=edited_order, order__lt=pre_order)
+        for curtain in curtains:
+            curtain.order += 1
+            curtain.save()
+    elif edited_order == pre_order:
+        print('なし')
+        return
+    else:
+        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gt=pre_order, order__lte=edited_order)
+        for curtain in curtains:
+            curtain.order -= 1
+            curtain.save()
 
 
 def get_card_list_as_dict(project_id):
@@ -58,10 +113,10 @@ def get_card_list_as_dict(project_id):
 
         card_list = []
         # cardが存在しないときどう動くのか心配
-        for card in Card.objects.filter(curtain=curtain).order_by('card_order', 'pk'):
+        for card in Card.objects.filter(curtain=curtain).order_by('order', 'pk'):
             card_dic = dict()
             card_dic["card_id"] = card.pk
-            card_dic["card_order"] = card.card_order
+            card_dic["order"] = card.order
             card_dic["card_name"] = card.card_name
             card_dic["card_detail"] = card.card_detail
             card_list.append(card_dic)

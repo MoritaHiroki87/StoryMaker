@@ -3,7 +3,7 @@ from django.views import View
 # from django.views.generic import TemplateView, FormView, ListView
 from .models import *
 from .forms import *
-from .services import get_card_list_as_dict
+from .services import *
 from .view_models import *
 
 
@@ -75,7 +75,9 @@ class EditCurtainView(View):
     def post(self, request, project_id, curtain_id):
         curtain = Curtain.objects.get(pk=curtain_id)
         edit_curtain_form = CurtainForm(request.POST, instance=curtain)
+        pre_order = curtain.order
         if edit_curtain_form.is_valid():
+            edit_curtain_order(curtain, pre_order)
             edit_curtain_form.save()
         return HttpResponseRedirect(reverse('board:edit_curtain', args=(project_id, curtain_id,)))
 
@@ -100,7 +102,7 @@ class CreateCardView(View):
         preset_order = Card.objects.filter(curtain=preset_curtain).count() +1
         create_card_form = CardForm(initial={
             'curtain': preset_curtain,
-            'card_order': preset_order,
+            'order': preset_order,
         })
         context = {
             'create_card_form': create_card_form,
@@ -133,7 +135,9 @@ class EditCardView(View):
     def post(self, request, project_id, curtain_id, card_id):
         card = Card.objects.get(pk=card_id)
         edit_card_form = CardForm(request.POST, instance=card)
+        pre_order = card.order
         if edit_card_form.is_valid():
+            edit_card_order(card, pre_order)
             edit_card_form.save()
         return HttpResponseRedirect(reverse('board:edit_card', args=(project_id, curtain_id, card_id,)))
 
