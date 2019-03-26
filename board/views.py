@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse
+from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
 from django.views import View
 # from django.views.generic import TemplateView, FormView, ListView
 from .models import *
@@ -64,6 +64,7 @@ class EditCurtainView(View):
         context = {
             'edit_curtain_form': edit_curtain_form,
             'project_id': project_id,
+            "curtain_id": curtain_id,
                    }
         return render(request, self.template_name, context)
 
@@ -73,6 +74,18 @@ class EditCurtainView(View):
         if edit_curtain_form.is_valid():
             edit_curtain_form.save()
         return HttpResponseRedirect(reverse('board:edit_curtain', args=(project_id, curtain_id,)))
+
+
+class DeleteCurtainView(View):
+
+    def get(self, request, project_id, curtain_id):
+        try:
+            curtain = Curtain.objects.get(pk=curtain_id)
+        except curtain.DoesNotExist:
+            raise Http404
+
+        curtain.delete()
+        return HttpResponseRedirect(reverse('board:project_board', args=(project_id, )))
 
 
 class CreateCardView(View):
