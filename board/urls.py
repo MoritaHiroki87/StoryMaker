@@ -11,7 +11,5 @@ urlpatterns = [
     path('<int:project_id>/<int:curtain_id>/delete/', DeleteCurtainView.as_view(), name='delete_curtain'),
     path('<int:project_id>/<int:curtain_id>/new-card/', CreateCardView.as_view(), name='create_card'),
     path('<int:project_id>/<int:curtain_id>/<int:card_id>/', EditCardView.as_view(), name='edit_card'),
-    # path('<int:project_id>/<int:curtain_id>/<int:card_id>/delete/', DeleteCardView.as_view(), name='delete_card'),
-    # path('kaeseru/', views.kaeseru, name='kaeseru'),
-    # path('permission/', views.permission_error, name='permission_error'),
+    path('<int:project_id>/<int:curtain_id>/<int:card_id>/delete/', DeleteCardView.as_view(), name='delete_card'),
 ]

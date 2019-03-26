@@ -131,6 +131,17 @@ class EditCardView(View):
         return HttpResponseRedirect(reverse('board:edit_card', args=(project_id, curtain_id, card_id,)))
 
 
+class DeleteCardView(View):
+    def get(self, request, project_id, curtain_id, card_id):
+        try:
+            card = Card.objects.get(pk=card_id)
+        except card.DoesNotExist:
+            raise Http404
+
+        card.delete()
+        return HttpResponseRedirect(reverse('board:project_board', args=(project_id, )))
+
+
 """
 class DashboardView(ListView):
     model = Card

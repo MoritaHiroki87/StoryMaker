@@ -21,6 +21,7 @@
     </button>
 </form>
 
+<p><a href="{% url 'board:delete_card' project_id=project_id curtain_id=curtain_id card_id=card_id%}">カードの削除</a></p>
 <p><a href="{% url 'board:project_board' project_id %}">戻る</a></p>
 
 </body>
