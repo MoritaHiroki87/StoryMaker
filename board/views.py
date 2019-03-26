@@ -38,8 +38,12 @@ class CreateCurtainView(View):
     template_name = 'board/create_curtain.html'
 
     def get(self, request, project_id):
+        # form_view作った方がいいのかな？
+        preset_project = Project.objects.get(pk=project_id)
+        preset_order = Curtain.objects.filter(project=preset_project).count() + 1
         create_curtain_form = CurtainForm(initial={
-            'project': Project.objects.get(pk=project_id)
+            'project': preset_project,
+            'order': preset_order,
         })
         context = {
             'create_curtain_form': create_curtain_form,
@@ -92,8 +96,11 @@ class CreateCardView(View):
     template_name = 'board/create_card.html'
 
     def get(self, request, project_id, curtain_id):
+        preset_curtain = Curtain.objects.get(pk=curtain_id)
+        preset_order = Card.objects.filter(curtain=preset_curtain).count() +1
         create_card_form = CardForm(initial={
-            'curtain': Curtain.objects.get(pk=curtain_id)
+            'curtain': preset_curtain,
+            'card_order': preset_order,
         })
         context = {
             'create_card_form': create_card_form,
