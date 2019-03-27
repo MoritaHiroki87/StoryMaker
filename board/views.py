@@ -38,13 +38,7 @@ class CreateCurtainView(View):
     template_name = 'board/create_curtain.html'
 
     def get(self, request, project_id):
-        # form_view作った方がいいのかな？
-        preset_project = Project.objects.get(pk=project_id)
-        preset_order = Curtain.objects.filter(project=preset_project).count() + 1
-        create_curtain_form = CurtainForm(initial={
-            'project': preset_project,
-            'order': preset_order,
-        })
+        create_curtain_form = CurtainForm()
         context = {
             'create_curtain_form': create_curtain_form,
             'project_id': project_id,
@@ -54,7 +48,10 @@ class CreateCurtainView(View):
     def post(self, request, project_id):
         create_curtain_form = CurtainForm(request.POST)
         if create_curtain_form.is_valid():
-            create_curtain_form.save()
+            curtain = create_curtain_form.save(commit=False)
+            curtain.project = Project.objects.get(pk=project_id)
+            curtain.order = Curtain.objects.filter(project=curtain.project).count() + 1
+            curtain.save()
         return HttpResponseRedirect(reverse('board:create_curtain', args=(project_id,)))
 
 
@@ -63,8 +60,7 @@ class EditCurtainView(View):
 
     def get(self, request, project_id, curtain_id):
         curtain = Curtain.objects.get(pk=curtain_id)
-        # curtain = CurtainViewModel(curtain)
-        edit_curtain_form = CurtainForm(instance=curtain)
+        edit_curtain_form = EditCurtainForm(instance=curtain)
         context = {
             'edit_curtain_form': edit_curtain_form,
             'project_id': project_id,
@@ -74,7 +70,7 @@ class EditCurtainView(View):
 
     def post(self, request, project_id, curtain_id):
         curtain = Curtain.objects.get(pk=curtain_id)
-        edit_curtain_form = CurtainForm(request.POST, instance=curtain)
+        edit_curtain_form = EditCurtainForm(request.POST, instance=curtain)
         pre_order = curtain.order
         if edit_curtain_form.is_valid():
             edit_curtain_order(curtain, pre_order)

@@ -15,7 +15,18 @@ class CurtainForm(forms.ModelForm):
 
     class Meta:
         model = Curtain
-        fields = '__all__'
+        fields = (
+            'curtain_name',
+        )
+
+
+class EditCurtainForm(CurtainForm):
+    class Meta:
+        model = Curtain
+        fields = (
+            'curtain_name',
+            'order',
+        )
 
 
 class CardForm(forms.ModelForm):
