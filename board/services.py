@@ -42,7 +42,7 @@ def edit_card_order(obj, pre_order):
     pre_obj = obj.pk
     if edited_order < pre_order:
         # ここでCurtainOBJからオブジェクト生成してるけど、どうにかCardからも生成できないかな？
-        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gte=edited_order, order__lt=pre_order)
+        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gte=edited_order, order__lt=pre_order, curtain=obj.curtain)
         for curtain in curtains:
             curtain.order += 1
             curtain.save()
@@ -50,7 +50,7 @@ def edit_card_order(obj, pre_order):
         print('なし')
         return
     else:
-        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gt=pre_order, order__lte=edited_order)
+        curtains = Card.objects.filter(~Q(pk=pre_obj), order__gt=pre_order, order__lte=edited_order, curtain=obj.curtain)
         for curtain in curtains:
             curtain.order -= 1
             curtain.save()

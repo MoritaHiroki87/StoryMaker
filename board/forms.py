@@ -33,4 +33,20 @@ class CardForm(forms.ModelForm):
     """カードのフォーム"""
     class Meta:
         model = Card
-        fields = '__all__'
+        fields = {
+            'card_name',
+            'card_detail',
+        }
+
+
+class EditCardForm(CardForm):
+    """カードのフォーム"""
+    field_order = ['card_name', 'card_detail', 'order', ]
+
+    class Meta:
+        model = Card
+        fields = {
+            'card_name',
+            'card_detail',
+            'order',
+        }

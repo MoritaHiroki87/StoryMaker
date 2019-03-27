@@ -94,12 +94,7 @@ class CreateCardView(View):
     template_name = 'board/create_card.html'
 
     def get(self, request, project_id, curtain_id):
-        preset_curtain = Curtain.objects.get(pk=curtain_id)
-        preset_order = Card.objects.filter(curtain=preset_curtain).count() +1
-        create_card_form = CardForm(initial={
-            'curtain': preset_curtain,
-            'order': preset_order,
-        })
+        create_card_form = CardForm()
         context = {
             'create_card_form': create_card_form,
             'project_id': project_id,
@@ -110,7 +105,10 @@ class CreateCardView(View):
     def post(self, request, project_id, curtain_id):
         create_card_form = CardForm(request.POST)
         if create_card_form.is_valid():
-            create_card_form.save()
+            card = create_card_form.save(commit=False)
+            card.curtain = Curtain.objects.get(pk=curtain_id)
+            card.order = Card.objects.filter(curtain=card.curtain).count() +1
+            card.save()
         return HttpResponseRedirect(reverse('board:create_card', args=(project_id, curtain_id,)))
 
 
@@ -119,7 +117,7 @@ class EditCardView(View):
 
     def get(self, request, project_id, curtain_id, card_id):
         card = Card.objects.get(pk=card_id)
-        edit_card_form = CardForm(instance=card)
+        edit_card_form = EditCardForm(instance=card)
         context = {
             'edit_card_form': edit_card_form,
             'project_id': project_id,
@@ -130,7 +128,7 @@ class EditCardView(View):
 
     def post(self, request, project_id, curtain_id, card_id):
         card = Card.objects.get(pk=card_id)
-        edit_card_form = CardForm(request.POST, instance=card)
+        edit_card_form = EditCardForm(request.POST, instance=card)
         pre_order = card.order
         if edit_card_form.is_valid():
             edit_card_order(card, pre_order)
