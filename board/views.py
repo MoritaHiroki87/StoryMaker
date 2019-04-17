@@ -1,10 +1,17 @@
 from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
 from django.views import View
+
+from django.views.generic import DetailView
+from django.conf import settings
+from django_weasyprint import CONTENT_TYPE_PNG, WeasyTemplateResponseMixin
+from datetime import timezone
+
 # from django.views.generic import TemplateView, FormView, ListView
 from .models import *
 from .forms import *
 from .services import *
 from .view_models import *
+
 
 
 # class IndexView(TemplateView):
@@ -145,6 +152,28 @@ class DeleteCardView(View):
 
         card.delete()
         return HttpResponseRedirect(reverse('board:project_board', args=(project_id, )))
+
+
+class MyModelView(DetailView):
+    model = Project
+    template_name = 'board/project_list.html'
+
+
+class MyModelPrintView(WeasyTemplateResponseMixin, MyModelView):
+    pdf_stylesheets = [
+        settings.STATIC_ROOT + 'board/project.css'
+    ]
+    pdf_attachment = False
+    pdf_filename = 'project_list.pdf'
+
+
+class MyModelImageView(WeasyTemplateResponseMixin, MyModelView):
+    content_type = CONTENT_TYPE_PNG
+
+    def get_pdf_filename(self):
+        return 'project_list{at}.pdf'.format(
+            at=timezone.now().strftime('%Y%m%d-%H%M'),
+        )
 
 
 """
