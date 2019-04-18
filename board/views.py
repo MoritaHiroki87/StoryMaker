@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse, Http404
+from django.shortcuts import render, HttpResponseRedirect, reverse, Http404, HttpResponse
 from django.views import View
 # from django.views.generic import TemplateView, FormView, ListView
 from .models import *
@@ -6,9 +6,12 @@ from .forms import *
 from .services import *
 from .view_models import *
 
+from easy_pdf.views import PDFTemplateView
+
 
 # class IndexView(TemplateView):
 #    template_name = 'index.html'
+
 
 class ProjectListView(View):
     template_name = 'board/project_list.html'
@@ -146,6 +149,9 @@ class DeleteCardView(View):
         card.delete()
         return HttpResponseRedirect(reverse('board:project_board', args=(project_id, )))
 
+
+class HelloPDFView(PDFTemplateView):
+    template_name = 'pdf_test.html'
 
 """
 class DashboardView(ListView):
