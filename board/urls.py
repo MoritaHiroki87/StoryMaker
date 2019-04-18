@@ -12,4 +12,7 @@ urlpatterns = [
     path('<int:project_id>/<int:curtain_id>/new-card/', CreateCardView.as_view(), name='create_card'),
     path('<int:project_id>/<int:curtain_id>/<int:card_id>/', EditCardView.as_view(), name='edit_card'),
     path('<int:project_id>/<int:curtain_id>/<int:card_id>/delete/', DeleteCardView.as_view(), name='delete_card'),
+    # pdfの練習
+    path('easypdf/', HelloPDFView.as_view(), name='easypdf'),
+
 ]
