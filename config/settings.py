@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'board.apps.BoardConfig',
     'easy_pdf',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

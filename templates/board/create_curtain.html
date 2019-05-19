@@ -1,6 +1,9 @@
 
 {% load staticfiles %}
 <!DOCTYPE html>
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='slim' %}
 <html lang="ja">
 <head>
     <meta charset="utf-8">
@@ -14,15 +17,30 @@
     <p></p>
 {% endif %}
 
-<form method="post" >
-    {% csrf_token %}
-    {{ create_curtain_form }}
-    <button type="submit" class="button">
-        幕の作成
-    </button>
-</form>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">幕の登録</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" >
+                    {% csrf_token %}
+                    {% bootstrap_form create_curtain_form %}
+                    {% buttons %}
+                    <button type="submit" class="btn btn-primary btn-block">幕の登録</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        <div class="card-footer text-muted text-center">
+            <p><a href="{% url 'board:project_board' project_id %}">プロジェクトボードへ戻る</a></p>
+        </div>
+        </div>
+    </div>
 
-<p><a href="{% url 'board:project_board' project_id %}">戻る</a></p>
+</div>
+
+
 
 </body>
 </html>
