@@ -95,20 +95,24 @@
             // 登録・更新ボタンの押下時に呼び出されるメソッド
             submitSave: function(){
                 this.clearMessages()
+                console.log('idCreated: ', this.isCreated)
                 api({
                     // 登録済みかどうかでHTTPメソッドとエンドポイントを切り替える
                     method: this.isCreated ? 'put' : 'post',
-                    url: this.isCreated() ? '/projects/' + this.form.project.id + '/' : '/projects/',
+                    url: this.isCreated ? '/projects/' + this.form.project.id + '/' : '/projects/',
                     data: {
                         'id': this.form.project.id,
                         'project_name': this.form.project.project_name,
                     }
                 })
                     .then(response => {
-                        this.message.info = this.isCreated() ? '更新しました。' : '登録しました。'
+                        console.log('動作確認then')
+                        this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
                         this.form.project = response.data
                     })
                     .catch(error => {
+                        console.log('動作確認catch')
+
                         const status = error.response ? error.response.status : 500
                         if (status === 400) {
                             // バリデーションNG
