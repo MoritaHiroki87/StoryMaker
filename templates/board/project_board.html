@@ -33,42 +33,46 @@
                     <p>------------</p>
                     <p><a class="card-create-btn" href="{% url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}">カードの作成</a></p>
                     <!-- ここにカードタイトルと登録ボタンを配置する -->
-                    <div id="app">
-                    <!-- ヘッダーナビゲーション -->
 
-                    <!-- メッセージエリア -->
+                <!--
+                {% verbatim %}
+                    <div id="app">
+                    <!-- ヘッダーナビゲーション
+                    <!-- メッセージエリア
                         <div id="message">
                             <p v-show="message.error">
-                                #{ message.error }
+                                {{ message.error }}
                             </p>
                             <div v-show="message.warnings.length">
                                 <p v-for="warning in message.warnings">
-                                    #{ warning }
+                                    {{warning }}
                                 </p>
                             </div>
                             <p v-show="message.info">
-                                #{ message.info }
+                                {{ message.info }}
                             </p>
                         </div>
-                        <!-- メインエリア -->
+                        <!-- メインエリア
                         <div id="main-page">
                             <form @submit.prevent="submitSave">
                                 <label>タイトル</label>
                                 <input type="text" v-model="form.card.card_name">
                                 <label>詳細</label>
                                 <input type="text" v-model="form.card.card_detail">
-                                <button type="submit" variant="primary">#{ isCreated ? '更新' : '登録'}</button>
+                                <button type="submit" variant="primary">{{ isCreated ? '更新' : '登録'}}</button>
                             </form>
                         </div>
 
-                        <!-- デバッグ -->
+                        <!-- デバッグ
                         <div id="debug">
                             <div>
-                                <pre>#{ $data }</pre> <!-- $dataはVueプロパティ -->
+                                <pre>{{ $data }}</pre> <!-- $dataはVueプロパティ
                             </div>
                         </div>
                     </div>
-                    <!-- 終わり -->
+                    <!-- 終わり
+                    {% endverbatim %}
+            -->
                 </div>
             </div>
         {% endfor %}
@@ -79,7 +83,7 @@
     </div>
 </div>
 
-<!-- Vuew.js, axios -->
+<!-- Vuew.js, axios
 <script></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -100,9 +104,9 @@
     })
 
     // Mustache構文のバッティングを回避
-    new Vue({
-        delimiters: ['#{', '}']
-    })
+    // new Vue({
+    //     delimiters: ['#{', '}']
+    // })
 
     // Vueインスタンスの生成
     const app = new Vue({
@@ -132,7 +136,7 @@
                 api({
                     // 登録済みかどうかでHTTPメソッドとエンドポイントを切り替える
                     method: this.isCreated ? 'put' : 'post',
-                    url: this.isCreated() ? '/cards/' + this.form.card.id + '/' : '/cards/',
+                    url: this.isCreated ? '/cards/' + this.form.card.id + '/' : '/cards/',
                     data: {
                         'id': this.form.card.id,
                         'card_name': this.form.card.card_name,
@@ -140,7 +144,7 @@
                     }
                 })
                     .then(response => {
-                        this.message.info = this.isCreated() ? '更新しました。' : '登録しました。'
+                        this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
                         this.form.card = response.data
                     })
                     .catch(error => {
@@ -167,6 +171,7 @@
         }
     })
 </script>
+-->
 
 
 
