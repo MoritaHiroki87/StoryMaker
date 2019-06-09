@@ -1,6 +1,6 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
 from .views import *
+
 
 app_name = 'board'
 urlpatterns = [
@@ -14,5 +14,5 @@ urlpatterns = [
     path('<int:project_id>/<int:curtain_id>/<int:card_id>/delete/', DeleteCardView.as_view(), name='delete_card'),
     # pdfの練習
     path('easypdf/', HelloPDFView.as_view(), name='easypdf'),
-
 ]
+

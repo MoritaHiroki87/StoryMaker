@@ -32,8 +32,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # My Applications
     'board.apps.BoardConfig',
+    'apiv1.apps.Apiv1Config',
+    # 3rd party apps
     'easy_pdf',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

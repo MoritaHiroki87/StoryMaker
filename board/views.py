@@ -153,6 +153,8 @@ class DeleteCardView(View):
 class HelloPDFView(PDFTemplateView):
     template_name = 'pdf_test.html'
 
+
+
 """
 class DashboardView(ListView):
     model = Card
