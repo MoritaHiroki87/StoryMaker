@@ -10,5 +10,132 @@
     <li>{{ project.project_name }}: <a href="{% url 'board:project_board' project.id %}">{{ project.project_name }}</a></li>
 </ul>
 {% endfor %}
+
+{% verbatim %}
+
+<div id="app">
+    <!-- ヘッダーナビゲーション -->
+
+    <!-- メッセージエリア -->
+    <div id="message">
+        <p v-show="message.error">
+            {{ message.error }}
+        </p>
+        <div v-show="message.warnings.length">
+            <p v-for="warning in message.warnings">
+                {{ warning }}
+            </p>
+        </div>
+        <p v-show="message.info">
+            {{ message.info }}
+        </p>
+    </div>
+    <!-- メインエリア -->
+    <div id="main-page">
+        <form @submit.prevent="submitSave">
+            <label>タイトル</label>
+            <input type="text" v-model="form.project.project_name">
+            <button type="submit" variant="primary">{{ isCreated ? '更新' : '登録'}}</button>
+        </form>
+    </div>
+
+    <!-- デバッグ -->
+    <div id="debug">
+        <div>
+            <pre>{{$data}}</pre> <!-- $dataはVueプロパティ -->
+        </div>
+    </div>
+</div>
+<!-- 終わり -->
+{% endverbatim %}
+
+<!-- Vuew.js, axios -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    // CSRFトークンの送信設定
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+
+    // APIクライアント
+    const api = axios.create({
+        baseURL: 'api/v1/',
+        timeout: 5000,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+
+    // Mustache構文のバッティングを回避
+    // Vue.options.delimiters = ['#{', '}']
+
+    // Vueインスタンスの生成
+    const app = new Vue({
+        el: '#app',
+        data: {
+            form: {
+                project: {
+                    project_name: '',
+                }
+            },
+            message: {
+                info: '',
+                warnings: [],
+                error: ''
+            }
+        },
+        computed: {
+            isCreated: function(){
+                return this.form.project.id !== undefined
+            }
+        },
+        methods: {
+            // 登録・更新ボタンの押下時に呼び出されるメソッド
+            submitSave: function(){
+                this.clearMessages()
+                console.log('idCreated: ', this.isCreated)
+                api({
+                    // 登録済みかどうかでHTTPメソッドとエンドポイントを切り替える
+                    method: this.isCreated ? 'put' : 'post',
+                    url: this.isCreated ? '/projects/' + this.form.project.id + '/' : '/projects/',
+                    data: {
+                        'id': this.form.project.id,
+                        'project_name': this.form.project.project_name,
+                    }
+                })
+                    .then(response => {
+                        console.log('動作確認then')
+                        this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
+                        this.form.project = response.data
+                    })
+                    .catch(error => {
+                        console.log('動作確認catch')
+
+                        const status = error.response ? error.response.status : 500
+                        if (status === 400) {
+                            // バリデーションNG
+                            this.message.warnings = [].concat.apply(
+                                [], Object.values(error.response.data))
+                        } else if (status === 401) {
+                            this.message.error = '認証エラー'
+                        } else if (status === 403) {
+                            this.message.error = '権限エラー'
+                        } else {
+                            this.message.error = '想定外のエラー'
+                        }
+                    })
+            },
+            // メッセージをクリア
+            clearMessages: function () {
+                this.message.error = ''
+                this.message.warnings = []
+                this.message.info = ''
+            }
+        }
+    })
+</script>
+
 </body>
 </html>
