@@ -8,6 +8,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'project_name', )
 
 
+class CurtainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curtain
+        fields = ('id', 'project', 'curtain_name',)
+
+
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card

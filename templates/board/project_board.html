@@ -1,27 +1,16 @@
 {% extends 'board/base.html' %}
 
 {% block content %}
-<v-container>
-    <v-layout>
-        <v-flex>
-            <v-card>
-                <v-card-title>うんこ</v-card-title>
-                <v-card-text>めっちゃ臭い</v-card-text>
-            </v-card>
-        </v-flex>
-    </v-layout>
-</v-container>
-
 
 <div class="card-board-area">
-    <v-cantainer class="curtain-container">
+    <v-container class="curtain-container">
 
         <v-layout row>
             <v-flex>
                 <v-card class="">
                     <v-layout justify-center row>
                         {% for curtain in project.curtain_list %}
-                            <v-flex xs4 ms3 md2>
+                            <v-flex xs4 ms3 md2 grow>
                                 <v-card class="blue lighten-4">
                                     <v-card-title class="font-weight-bold">{{ curtain.curtain_name }}</v-card-title>
                                     <v-btn fab dark small color="indigo" href="{% url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">
@@ -48,19 +37,23 @@
                         {% endfor %}
                     </v-layout>
 
-
                     <v-layout justify-center row>
                         <v-flex xs4 ms4 md4>
-                            <v-btn fab dark small color="indigo" href="{% url 'board:create_curtain' project.project_id %}">
-                                <v-icon>add</v-icon>
-                            </v-btn>
+
+                            <form @submit.prevent="createCurtain('{{ project.project_id }}')">
+                                <v-text-field outline v-model="form.curtain.name" label="list_name"></v-text-field>
+                                <v-btn fab dark small color="indigo" type="submit">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                            </form>
                         </v-flex>
                     </v-layout>
+
                 </v-card>
             </v-flex>
         </v-layout>
 
-    </v-cantainer>
+    </v-container>
 </div>
 
 
@@ -76,7 +69,7 @@
 
     // APIクライアント
     const api = axios.create({
-        baseURL: 'api/v1/',
+        baseURL: '/api/v1/',
         timeout: 5000,
         headers: {
             'Content-Type': 'application/json',
@@ -87,6 +80,9 @@
     // Mustache構文のバッティングを回避
     Vue.options.delimiters = ['#{', '}']
 
+    // Devtoolの導入
+    Vue.config.devtools = true
+
     // Vueインスタンスの生成
     const app = new Vue({
         el: '#app',
@@ -94,6 +90,14 @@
             form: {
                 project: {
                     project_name: '',
+                },
+                curtain: {
+                    name: '',
+                    project_id: ''
+                },
+                card: {
+                    name: '',
+                    curtain_id: ''
                 }
             },
             message: {
@@ -104,9 +108,95 @@
         },
         computed: {
             isCreated: function () {
-                return this.form.project.id !== undefined
+                return this.form.curtain.id !== undefined
             }
         },
+        methods: {
+            // カードの新規作成
+            createCard: function(){
+                api({
+                    method: 'post',
+                    url: '',
+                    data: {
+                        'id': this.form.card.id,
+                        'card_name': this.form.card.name,
+                        'curtain': this.form.card.curtain_id
+                    }
+                })
+            },
+            updateCard: function () {
+                // 多分ここにvueコンポーネント的な処理
+                api({
+                    method: 'put',
+                    url: '',
+                    data: {
+                        'id': this.form.card.id,
+                        'card_name': this.form.card.name,
+                        'curtain': this.form.card.curtain_id
+                    }
+                })
+
+            },
+            deleteCard: function () {
+                api({
+                    method: 'delete',
+                    url: '',
+                    data: {
+                        'id': this.form.card.id,
+                        'card_name': this.form.card.name,
+                        'curtain': this.form.card.curtain_id
+                    }
+                })
+            },
+
+            createCurtain: function(p_id){
+                // console.log('vueのイベントハンドラ？から渡った変数：', p_name)
+                // console.log('this.form.curtain.project_idの型:', typeof this.form.curtain.project_id)
+                // console.log('this.form.curtain.project_id:', this.form.curtain.project_id)
+
+                // console.log('引数p_idの型:', typeof p_id)
+                // console.log('引数p_id:', p_id)
+
+                api({
+                    method: 'post',
+                    url: 'curtains/',
+                    data: {
+                        'id': this.form.curtain.id,
+                        'curtain_name': this.form.curtain.name,
+                        'project': p_id
+                    }
+                })
+                    .then(response => {
+                            console.log('動作確認then')
+                            this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
+                            this.form.project = response.data
+                    })
+            },
+            updateCurtain: function () {
+                // 多分ここにvueコンポーネント的な処理
+                api({
+                    method: 'put',
+                    url: '',
+                    data: {
+                        'id': this.form.curtain.id,
+                        'curtain_name': this.form.curtain.name,
+                        'project': this.form.curtain.project_id
+                    }
+                })
+
+            },
+            deleteCurtain: function () {
+                api({
+                    method: 'delete',
+                    url: '',
+                    data: {
+                        'id': this.form.curtain.id,
+                        'curtain_name': this.form.curtain.name,
+                        'project': this.form.curtain.project_id
+                    }
+                })
+            },
+        }
     })
 
 </script>

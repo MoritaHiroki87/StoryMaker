@@ -106,16 +106,16 @@ def get_card_list_as_dict(project_id):
     project_dic["project_name"] = project.project_name
 
     curtain_list = []
-    for curtain in Curtain.objects.filter(project=project).order_by('order', 'pk'):
+    for curtain in Curtain.objects.filter(project=project).order_by('order', 'created_at'):
         curtain_dic = dict()
-        curtain_dic["curtain_id"] = curtain.pk
+        curtain_dic["curtain_id"] = curtain.id
         curtain_dic["curtain_name"] = curtain.curtain_name
 
         card_list = []
         # cardが存在しないときどう動くのか心配
-        for card in Card.objects.filter(curtain=curtain).order_by('order', 'pk'):
+        for card in Card.objects.filter(curtain=curtain).order_by('order', 'created_at'):
             card_dic = dict()
-            card_dic["card_id"] = card.pk
+            card_dic["card_id"] = card.id
             card_dic["order"] = card.order
             card_dic["card_name"] = card.card_name
             card_dic["card_detail"] = card.card_detail
