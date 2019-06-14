@@ -17,4 +17,4 @@ class CurtainSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ('id', 'card_name', 'card_detail')
+        fields = ('id', 'curtain', 'card_name', 'card_detail')

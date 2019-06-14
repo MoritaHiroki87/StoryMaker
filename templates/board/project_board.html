@@ -29,9 +29,14 @@
                                                 </v-flex>
                                             </v-layout>
                                         {% endfor %}
-                                    <v-btn fab dark small color="indigo" class="ml-0" href="{% url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}">
-                                        <v-icon>add</v-icon>
-                                    </v-btn>
+                                    <form @submit.prevent="createCard('{{ curtain.curtain_id }}')">
+                                        <v-text-field outline v-model="form.card.name" label="name"></v-text-field>
+                                        <v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>
+                                        <v-btn fab dark small color="indigo" class="ml-0" type="submit">
+                                            <!-- <v-btn fab dark small color="indigo" class="ml-0" href="{@ url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}"> -->
+                                            <v-icon>add</v-icon>
+                                        </v-btn>
+                                    </form>
                                 </v-card>
                             </v-flex>
                         {% endfor %}
@@ -97,6 +102,7 @@
                 },
                 card: {
                     name: '',
+                    detail: '',
                     curtain_id: ''
                 }
             },
@@ -113,16 +119,29 @@
         },
         methods: {
             // カードの新規作成
-            createCard: function(){
+            createCard: function(curtain_id){
+                console.log('this.form.card.curtain_idの型:', typeof this.form.card.curtain_id)
+                console.log('this.form.card.curtain_id:', this.form.card.curtain_id)
+
+                console.log('引数curtain_idの型:', typeof curtain_id)
+                console.log('引数curtain_id:', curtain_id)
+
+                console.log('this.form.card.name:', this.form.card.name)
                 api({
                     method: 'post',
-                    url: '',
+                    url: 'cards/',
                     data: {
                         'id': this.form.card.id,
                         'card_name': this.form.card.name,
-                        'curtain': this.form.card.curtain_id
+                        'card_detail': this.form.card.detail,
+                        'curtain': curtain_id
                     }
                 })
+                    .then(response => {
+                            console.log('動作確認then')
+                            this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
+                            this.form.card = response.data
+                    })
             },
             updateCard: function () {
                 // 多分ここにvueコンポーネント的な処理
@@ -149,7 +168,7 @@
                 })
             },
 
-            createCurtain: function(p_id){
+            createCurtain: function(project_id){
                 // console.log('vueのイベントハンドラ？から渡った変数：', p_name)
                 // console.log('this.form.curtain.project_idの型:', typeof this.form.curtain.project_id)
                 // console.log('this.form.curtain.project_id:', this.form.curtain.project_id)
@@ -163,7 +182,7 @@
                     data: {
                         'id': this.form.curtain.id,
                         'curtain_name': this.form.curtain.name,
-                        'project': p_id
+                        'project': project_id
                     }
                 })
                     .then(response => {
