@@ -51,6 +51,11 @@
                                     <v-icon>add</v-icon>
                                 </v-btn>
                             </form>
+                            <form @submit.prevent="deleteCurtain('{{ project.project_id }}')">
+                                <v-btn fab dark small color="indigo" type="submit">
+                                    <v-icon>list</v-icon>
+                                </v-btn>
+                            </form>
                         </v-flex>
                     </v-layout>
 
@@ -61,6 +66,9 @@
     </v-container>
 </div>
 
+    <v-card>
+        #{ $data }
+    </v-card>
 
 {% endblock %}
 
@@ -204,14 +212,14 @@
                 })
 
             },
-            deleteCurtain: function () {
+            deleteCurtain: function (project_id) {
                 api({
                     method: 'delete',
-                    url: '',
+                    url: 'curtains/' + this.form.curtain.id,
                     data: {
                         'id': this.form.curtain.id,
                         'curtain_name': this.form.curtain.name,
-                        'project': this.form.curtain.project_id
+                        'project': project_id
                     }
                 })
             },
