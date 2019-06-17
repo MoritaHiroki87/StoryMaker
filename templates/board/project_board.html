@@ -17,25 +17,17 @@
                                             <v-icon>edit</v-icon>
                                         </v-btn>
 
-                                            <v-layout justify-center column v-for="card in curtain.cards">
-                                                <v-flex>
-                                                    <v-card class="blue lighten-4">
-                                                        <v-card-title class="font-weight-bold mb-0">#{ card.card_name }</v-card-title>
-                                                        <v-btn fab dark small color="indigo" href="#">
-                                                            <v-icon>edit</v-icon>
-                                                        </v-btn>
-                                                    </v-card>
-                                                </v-flex>
-                                            </v-layout>
-
-                                        <form @submit.prevent="createCard(curtain.id)">
-                                            <v-text-field outline v-model="form.card.name" label="name"></v-text-field>
-                                            <v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>
-                                            <v-btn fab dark small color="indigo" class="ml-0" type="submit">
-                                                <!-- <v-btn fab dark small color="indigo" class="ml-0" href="{@ url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}"> -->
-                                                <v-icon>add</v-icon>
-                                            </v-btn>
-                                        </form>
+                                        <v-layout justify-center column v-for="card in curtain.cards">
+                                            <v-flex>
+                                                <v-card class="blue lighten-4">
+                                                    <v-card-title class="font-weight-bold mb-0">#{ card.card_name }</v-card-title>
+                                                    <v-btn fab dark small color="indigo" href="#">
+                                                        <v-icon>edit</v-icon>
+                                                    </v-btn>
+                                                </v-card>
+                                            </v-flex>
+                                        </v-layout>
+                                        <create-card-form :curtain_id="curtain.id"></create-card-form>
                                     </v-card>
 
                                     <form @submit.prevent="deleteCurtain(curtain.id, curtain.curtain_name)">
@@ -65,7 +57,6 @@
 
         </v-container>
     </div>
-
 
     <v-card>
         #{ $data }
@@ -97,6 +88,60 @@
     // Devtoolの導入
     Vue.config.devtools = true
 
+    // コンポーネントの作成
+    // これはOK
+    const formComp = {
+        props: ['curtain_id'],
+        template: '<p>#{ curtain_id }</p>'
+    }
+
+    const CreateCardFromComp = {
+        props: ['curtain_id'],
+        template: '<form @submit.prevent="createCard(curtain_id)"><v-text-field outline v-model="form.card.name" label="name"></v-text-field>' +
+            '<v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>' +
+            '<v-btn fab dark small color="indigo" class="ml-0" type="submit">' +
+            '<v-icon>add</v-icon>' +
+            '</v-btn></form>',
+        data: ()=> {
+            return {
+                form: {
+                    card: {
+                        name: '',
+                        detail: '',
+                        curtain_id: ''
+                    }
+                }
+            }
+        },
+        methods: {
+            // カードの新規作成
+            createCard: function(curtain_id){
+                console.log('this.form.card.curtain_idの型:', typeof this.form.card.curtain_id)
+                console.log('this.form.card.curtain_id:', this.form.card.curtain_id)
+
+                console.log('引数curtain_idの型:', typeof curtain_id)
+                console.log('引数curtain_id:', curtain_id)
+
+                console.log('this.form.card.name:', this.form.card.name)
+                api({
+                    method: 'post',
+                    url: 'cards/',
+                    data: {
+                        'id': this.form.card.id,
+                        'card_name': this.form.card.name,
+                        'card_detail': this.form.card.detail,
+                        'curtain': curtain_id
+                    }
+                })
+                    .then(response => {
+                            console.log('動作確認then')
+                            // this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
+                            // this.form.card = response.data
+                    })
+            }
+        }
+    }
+
     // Vueインスタンスの生成
     const app = new Vue({
         el: '#app',
@@ -108,11 +153,6 @@
                 curtain: {
                     name: '',
                     project_id: ''
-                },
-                card: {
-                    name: '',
-                    detail: '',
-                    curtain_id: ''
                 }
             },
             project: [{
@@ -140,31 +180,7 @@
             }
         },
         methods: {
-            // カードの新規作成
-            createCard: function(curtain_id){
-                console.log('this.form.card.curtain_idの型:', typeof this.form.card.curtain_id)
-                console.log('this.form.card.curtain_id:', this.form.card.curtain_id)
-
-                console.log('引数curtain_idの型:', typeof curtain_id)
-                console.log('引数curtain_id:', curtain_id)
-
-                console.log('this.form.card.name:', this.form.card.name)
-                api({
-                    method: 'post',
-                    url: 'cards/',
-                    data: {
-                        'id': this.form.card.id,
-                        'card_name': this.form.card.name,
-                        'card_detail': this.form.card.detail,
-                        'curtain': curtain_id
-                    }
-                })
-                    .then(response => {
-                            console.log('動作確認then')
-                            this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
-                            this.form.card = response.data
-                    })
-            },
+            // createCardはコンポーネント化
             updateCard: function () {
                 // 多分ここにvueコンポーネント的な処理
                 api({
@@ -251,6 +267,9 @@
                 .catch(response => {
                     console.log(response)
                 })
+        },
+        components: {
+            'create-card-form': CreateCardFromComp
         }
     })
 
