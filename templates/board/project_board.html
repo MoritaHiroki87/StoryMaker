@@ -24,6 +24,12 @@
                                                     <v-btn fab dark small color="indigo" href="#">
                                                         <v-icon>edit</v-icon>
                                                     </v-btn>
+                                                    <form @submit.prevent="deleteCard(card.id, card.card_name, card.card_detail, curtain.id)">
+                                                        <v-btn fab dark small color="indigo" type="submit">
+                                                            <v-icon>list</v-icon>
+                                                        </v-btn>
+                                                    </form>
+
                                                 </v-card>
                                             </v-flex>
                                         </v-layout>
@@ -194,14 +200,15 @@
                 })
 
             },
-            deleteCard: function (card_id) {
+            deleteCard: function (card_id, card_name, card_detail, curtain_id) {
                 api({
                     method: 'delete',
                     url: 'cards/' + card_id + '/',
                     data: {
-                        'id': this.form.card.id,
-                        'card_name': this.form.card.name,
-                        'curtain': this.form.card.curtain_id
+                        'id': card_id,
+                        'card_name': card_name,
+                        'card_detail': card_detail,
+                        'curtain': curtain_id
                     }
                 })
             },
