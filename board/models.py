@@ -33,7 +33,7 @@ class Curtain(models.Model):
     curtain_name:幕名
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE, related_name='curtains')
     curtain_name = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -50,7 +50,7 @@ class Card(models.Model):
     updated_at:更新日時
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    curtain = models.ForeignKey(Curtain, null=True, blank=True, on_delete=models.CASCADE)
+    curtain = models.ForeignKey(Curtain, null=True, blank=True, on_delete=models.CASCADE, related_name='cards')
     card_name = models.CharField(max_length=32)
     card_detail = models.TextField()
     order = models.IntegerField(default=1)

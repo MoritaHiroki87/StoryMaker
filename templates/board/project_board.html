@@ -2,69 +2,70 @@
 
 {% block content %}
 
-<div class="card-board-area">
-    <v-container class="curtain-container">
+    <div class="card-board-area">
+        <v-container class="curtain-container">
 
-        <v-layout row>
-            <v-flex>
-                <v-card class="">
-                    <v-layout justify-center row>
-                        {% for curtain in project.curtain_list %}
-                            <v-flex xs4 ms3 md2 grow>
-                                <v-card class="blue lighten-4">
-                                    <v-card-title class="font-weight-bold">{{ curtain.curtain_name }}</v-card-title>
-                                    <v-btn fab dark small color="indigo" href="{% url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">
-                                        <v-icon>edit</v-icon>
-                                    </v-btn>
-                                        {% for card in curtain.card_list %}
+            <v-layout row>
+                <v-flex>
+                    <v-card class="">
+                        <v-layout justify-center row>
 
-                                            <v-layout justify-center column>
+                                <v-flex xs4 ms3 md2 grow v-for="curtain in project.curtains">
+                                    <v-card class="blue lighten-4">
+                                        <v-card-title class="font-weight-bold">#{ curtain.curtain_name }</v-card-title>
+                                        <v-btn fab dark small color="indigo" href="#">
+                                            <v-icon>edit</v-icon>
+                                        </v-btn>
+
+                                            <v-layout justify-center column v-for="card in curtain.cards">
                                                 <v-flex>
                                                     <v-card class="blue lighten-4">
-                                                        <v-card-title class="font-weight-bold mb-0">{{ card.card_name }}</v-card-title>
-                                                        <v-btn fab dark small color="indigo" href="{% url 'board:edit_card' project_id=project.project_id curtain_id=curtain.curtain_id card_id=card.card_id %}">
+                                                        <v-card-title class="font-weight-bold mb-0">#{ card.card_name }</v-card-title>
+                                                        <v-btn fab dark small color="indigo" href="#">
                                                             <v-icon>edit</v-icon>
                                                         </v-btn>
                                                     </v-card>
                                                 </v-flex>
                                             </v-layout>
-                                        {% endfor %}
-                                    <form @submit.prevent="createCard('{{ curtain.curtain_id }}')">
-                                        <v-text-field outline v-model="form.card.name" label="name"></v-text-field>
-                                        <v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>
-                                        <v-btn fab dark small color="indigo" class="ml-0" type="submit">
-                                            <!-- <v-btn fab dark small color="indigo" class="ml-0" href="{@ url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}"> -->
-                                            <v-icon>add</v-icon>
+
+                                        <form @submit.prevent="createCard(curtain.id)">
+                                            <v-text-field outline v-model="form.card.name" label="name"></v-text-field>
+                                            <v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>
+                                            <v-btn fab dark small color="indigo" class="ml-0" type="submit">
+                                                <!-- <v-btn fab dark small color="indigo" class="ml-0" href="{@ url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}"> -->
+                                                <v-icon>add</v-icon>
+                                            </v-btn>
+                                        </form>
+                                    </v-card>
+
+                                    <form @submit.prevent="deleteCurtain(curtain.id, curtain.curtain_name)">
+                                        <v-btn fab dark small color="indigo" type="submit">
+                                            <v-icon>list</v-icon>
                                         </v-btn>
                                     </form>
-                                </v-card>
+                                </v-flex>
+
+                        </v-layout>
+
+                        <v-layout justify-center row>
+                            <v-flex xs4 ms4 md4>
+
+                                <form @submit.prevent="createCurtain()">
+                                    <v-text-field outline v-model="form.curtain.name" label="list_name"></v-text-field>
+                                    <v-btn fab dark small color="indigo" type="submit">
+                                        <v-icon>add</v-icon>
+                                    </v-btn>
+                                </form>
                             </v-flex>
-                        {% endfor %}
-                    </v-layout>
+                        </v-layout>
 
-                    <v-layout justify-center row>
-                        <v-flex xs4 ms4 md4>
+                    </v-card>
+                </v-flex>
+            </v-layout>
 
-                            <form @submit.prevent="createCurtain('{{ project.project_id }}')">
-                                <v-text-field outline v-model="form.curtain.name" label="list_name"></v-text-field>
-                                <v-btn fab dark small color="indigo" type="submit">
-                                    <v-icon>add</v-icon>
-                                </v-btn>
-                            </form>
-                            <form @submit.prevent="deleteCurtain('{{ project.project_id }}')">
-                                <v-btn fab dark small color="indigo" type="submit">
-                                    <v-icon>list</v-icon>
-                                </v-btn>
-                            </form>
-                        </v-flex>
-                    </v-layout>
+        </v-container>
+    </div>
 
-                </v-card>
-            </v-flex>
-        </v-layout>
-
-    </v-container>
-</div>
 
     <v-card>
         #{ $data }
@@ -114,6 +115,19 @@
                     curtain_id: ''
                 }
             },
+            project: [{
+                id: '',
+                project_name: '',
+                curtains: [{
+                    id: '',
+                    curtain_name: '',
+                    card: [{
+                        id: '',
+                        card_name: '',
+                        card_detail: ''
+                    }]
+                }]
+            }],
             message: {
                 info: '',
                 warnings: [],
@@ -164,10 +178,10 @@
                 })
 
             },
-            deleteCard: function () {
+            deleteCard: function (card_id) {
                 api({
                     method: 'delete',
-                    url: '',
+                    url: 'cards/' + card_id + '/',
                     data: {
                         'id': this.form.card.id,
                         'card_name': this.form.card.name,
@@ -176,7 +190,7 @@
                 })
             },
 
-            createCurtain: function(project_id){
+            createCurtain: function(){
                 // console.log('vueのイベントハンドラ？から渡った変数：', p_name)
                 // console.log('this.form.curtain.project_idの型:', typeof this.form.curtain.project_id)
                 // console.log('this.form.curtain.project_id:', this.form.curtain.project_id)
@@ -190,13 +204,14 @@
                     data: {
                         'id': this.form.curtain.id,
                         'curtain_name': this.form.curtain.name,
-                        'project': project_id
+                        'project': this.project.id
                     }
                 })
                     .then(response => {
-                            console.log('動作確認then')
+                            console.log('curtainの作成に成功')
+                            console.log(response.data)
                             this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
-                            this.form.project = response.data
+                            // this.project.curtains = response.data
                     })
             },
             updateCurtain: function () {
@@ -212,17 +227,30 @@
                 })
 
             },
-            deleteCurtain: function (project_id) {
+            deleteCurtain: function (curtain_id, curtain_name) {
                 api({
                     method: 'delete',
-                    url: 'curtains/' + this.form.curtain.id,
+                    url: 'curtains/' + curtain_id + '/',
                     data: {
-                        'id': this.form.curtain.id,
-                        'curtain_name': this.form.curtain.name,
-                        'project': project_id
+                        'id': curtain_id,
+                        'curtain_name': curtain_name,
+                        'project': this.project.id
                     }
                 })
             },
+        },
+        mounted: function () {
+            api({
+                method: 'get',
+                // @@ 苦肉の策すぎる
+                url: 'projects/' + '{{ project.project_id }}' + '/',
+            })
+                .then(response => {
+                    this.project = response.data
+                })
+                .catch(response => {
+                    console.log(response)
+                })
         }
     })
 

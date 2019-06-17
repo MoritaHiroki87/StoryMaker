@@ -2,19 +2,23 @@ from rest_framework import serializers
 from board.models import *
 
 
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = ('id', 'project_name', )
-
-
-class CurtainSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Curtain
-        fields = ('id', 'project', 'curtain_name',)
-
-
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ('id', 'curtain', 'card_name', 'card_detail')
+        fields = ('id', 'card_name', 'curtain', 'card_detail',)
+
+
+class CurtainSerializer(serializers.ModelSerializer):
+    cards = CardSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Curtain
+        fields = ('id', 'curtain_name', 'project', 'cards')
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    curtains = CurtainSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'project_name', 'curtains')
