@@ -139,8 +139,10 @@
                         'curtain': curtain_id
                     }
                 })
-                    .then(response =>{
-                })
+                    .then(response => {
+                        console.log('動作確認then')
+                        console.log(response.data)
+                    })
             },
         }
     }
@@ -188,7 +190,9 @@
                         'project': project_id
                     }
                 })
-                    .then(response =>{
+                    .then(response => {
+                        console.log('動作確認then')
+                        console.log(response.data)
                     })
             },
         }
@@ -235,9 +239,8 @@
                     }
                 })
                     .then(response => {
-                            console.log('動作確認then')
-                            // this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
-                            // this.form.card = response.data
+                        console.log('動作確認then')
+                        console.log(response.data)
                     })
             }
         }
@@ -248,9 +251,6 @@
         el: '#app',
         data: {
             form: {
-                project: {
-                    project_name: '',
-                },
                 curtain: {
                     name: '',
                     project_id: ''
@@ -293,6 +293,10 @@
                         'curtain': curtain_id
                     }
                 })
+                    .then(response => {
+                        console.log('cardnの削除に成功')
+                        console.log(response.data)
+                    })
             },
 
             createCurtain: function(){
@@ -313,10 +317,10 @@
                     }
                 })
                     .then(response => {
-                            console.log('curtainの作成に成功')
-                            console.log(response.data)
-                            this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
-                            // this.project.curtains = response.data
+                        console.log('curtainの作成に成功')
+                        console.log(response.data)
+                        this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
+                        // this.project.curtains = response.data
                     })
             },
             deleteCurtain: function (curtain_id, curtain_name) {
@@ -329,9 +333,26 @@
                         'project': this.project.id
                     }
                 })
+                    .then(response => {
+                        console.log('curtainの削除に成功')
+                        console.log(response.data)
+                    })
             },
         },
         mounted: function () {
+            api({
+                method: 'get',
+                // @@ 苦肉の策すぎる
+                url: 'projects/' + '{{ project.project_id }}' + '/',
+            })
+                .then(response => {
+                    this.project = response.data
+                })
+                .catch(response => {
+                    console.log(response)
+                })
+        },
+        updated: function () {
             api({
                 method: 'get',
                 // @@ 苦肉の策すぎる
