@@ -142,6 +142,7 @@
                     .then(response => {
                         console.log('動作確認then')
                         console.log(response.data)
+                        this.form = response.data
                     })
             },
         }
@@ -193,6 +194,7 @@
                     .then(response => {
                         console.log('動作確認then')
                         console.log(response.data)
+                        this.form = response.data
                     })
             },
         }
@@ -241,6 +243,7 @@
                     .then(response => {
                         console.log('動作確認then')
                         console.log(response.data)
+                        this.form.card = response.data
                     })
             }
         }
@@ -294,19 +297,11 @@
                     }
                 })
                     .then(response => {
-                        console.log('cardnの削除に成功')
-                        console.log(response.data)
+
                     })
             },
 
             createCurtain: function(){
-                // console.log('vueのイベントハンドラ？から渡った変数：', p_name)
-                // console.log('this.form.curtain.project_idの型:', typeof this.form.curtain.project_id)
-                // console.log('this.form.curtain.project_id:', this.form.curtain.project_id)
-
-                // console.log('引数p_idの型:', typeof p_id)
-                // console.log('引数p_id:', p_id)
-
                 api({
                     method: 'post',
                     url: 'curtains/',
@@ -319,8 +314,7 @@
                     .then(response => {
                         console.log('curtainの作成に成功')
                         console.log(response.data)
-                        this.message.info = this.isCreated ? '更新しました。' : '登録しました。'
-                        // this.project.curtains = response.data
+                        this.form.curtain = response.data
                     })
             },
             deleteCurtain: function (curtain_id, curtain_name) {
