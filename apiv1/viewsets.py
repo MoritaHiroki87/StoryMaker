@@ -1,7 +1,5 @@
 from board.models import Project, Curtain, Card
-
-import django_filters
-from rest_framework import viewsets, filters
+from rest_framework import viewsets
 from .serializer import ProjectSerializer, CurtainSerializer, CardSerializer
 
 
