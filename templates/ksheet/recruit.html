@@ -1,0 +1,53 @@
+{% extends "ksheet/base.html" %}
+{% load static %}
+{% block title %}
+subwaypkpk評価シート
+{% endblock %} |
+
+
+{% block stylesheet %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <div class="card col-10">
+        <div class="card-body">
+            <h2 class="card-title">応募のしかた（森田）</h2>
+            <p class="card-text">
+                募集者アカウントのフォロー、RT、最後にリプライで下記の情報を送っていただければ応募完了です。<br>
+                リプライで送って欲しい情報は、<br>
+                ・作品名<br>
+                ・作品URL<br>
+                また、その他の条件として、<br>
+                ・文字数制限：１〜８万文字 ※多少過不足あっても大丈夫です<br>
+                ・ジャンル制限：どぎついエログロ以外ならOK<br>
+            </p>
+        </div>
+        <hr>
+        <div class="card-body">
+            <h2 class="card-title">募集の概要</h2>
+            <p class="card-text">
+                トライアル版です。そのうち評価内容とか充実させながら有償版をやります。<br>
+                募集者（もりた）は一般人ですが、脚本術について大学以来研究しており、<br>
+                そこそこ理論的な話ができると思うので、そういう点を期待してください。<br>
+            </p>
+        </div>
+        <hr>
+        <div class="card-body">
+            <h2 class="card-title">その他 注意</h2>
+            <p class="card-text">
+                ・ツイッターでの公開を前提にしています<br>
+                ・募集が多くなった場合は抽選を行いますのであしからず<br>
+                ・読むのに時間がかかると思うので気長に待ってください<br>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+{% endblock %}

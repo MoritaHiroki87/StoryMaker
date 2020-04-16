@@ -33,11 +33,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # My Applications
-    'board.apps.BoardConfig',
-    'apiv1.apps.Apiv1Config',
+    # 'board.apps.BoardConfig',
+    # 'apiv1.apps.Apiv1Config',
+    'ksheet.apps.KsheetConfig',
     # 3rd party apps
-    'easy_pdf',
-    'rest_framework',
+    'bootstrap4',
+    # 'easy_pdf',
+    # 'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +79,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 hostname = gethostname()
 
-if "moritahiroki" in hostname:
+if "morita" in hostname:
     # デバッグ環境
     DEBUG = True
     DATABASES = {

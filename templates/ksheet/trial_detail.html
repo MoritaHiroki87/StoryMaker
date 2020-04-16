@@ -1,0 +1,75 @@
+{% extends "ksheet/base.html" %}
+{% load static %}
+{% block title %}
+subwaypkpk評価シート
+{% endblock %} |
+
+
+{% block stylesheet %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+{% endblock %}
+
+{% block header %}
+        <p class="d-none d-xl-block">大きすぎ</p>
+        <p class="d-display d-lg-none">ちいさすぎ</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="card col-7">
+        <div class="card-body">
+            <h3 class="card-title">タイトル：</h3>
+            <h3 class="card-text works_title">　{{ sheet.name }}</h3>
+            <hr>
+            <p class="card-text">作者名：{{ sheet.author }}<br>
+                作品URL：<br>
+                評価コース：{{ sheet.course }}</p>
+            <hr>
+            <h2 class="card-text assessment-text">総合評価：<span class="assessment-text-total">{{ sheet.get_total_display }}</span></h2>
+            <div class="assessment-children-container f-container">
+                <p class="f-item">コンセプト：{{ sheet.get_concept_display }}</p>
+                <p class="f-item">テーマ：{{ sheet.get_theme_display }}</p>
+                <p class="f-item">物語：{{ sheet.get_story_display }}</p>
+                <p class="f-item">構成：{{ sheet.get_structure_display }}</p>
+                <p class="f-item">キャラクター：{{ sheet.get_character_display }}</p>
+                <p class="f-item">シーン：{{ sheet.get_scene_display }}</p>
+                <p class="f-item">地の文：{{ sheet.get_exposition_display }}</p>
+                <p class="f-item">台詞：{{ sheet.get_dialogue_display }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="card col-5 chart-box">
+        <canvas id="myChart" style="height: 350px"></canvas>
+    </div>
+</div>
+
+<hr>
+
+<div class="comment-content row">
+        <div class="good-point card">
+            <div class="card-body">
+                <h5 class="card-title">強み</h5>
+                <p>{{ sheet.good_point_as_md | safe }}</p>
+            </div>
+        </div>
+        <div class="bad-point card">
+            <div class="card-body">
+                <h5 class="card-title">改善点</h5>
+                <p>{{ sheet.bad_point_as_md | safe }}</p>
+            </div>
+        </div>
+        <div class="total-comment card">
+            <div class="card-body">
+                <h5 class="card-title">総合評価：{{ sheet.get_total_display }}</h5>
+                <p>{{ sheet.total_comment_as_md | safe }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    {% include 'ksheet/includes/assessment-chart.html' %}
+{% endblock %}

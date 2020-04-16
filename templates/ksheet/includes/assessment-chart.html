@@ -1,0 +1,71 @@
+
+    <script>
+
+        var colorSet = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+
+        var color = Chart.helpers.color;
+
+        window.onload = function(){
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['コンセプト', 'テーマ', '物語', '構成', 'キャラクター', 'シーン', '地の文', '台詞',],
+                    datasets: [{
+                        label: "作品評価",
+                        backgroundColor: color(colorSet.red).alpha(0.5).rgbString(),
+                        borderColor: colorSet.red,
+                        pointBackgroundColor: colorSet.red,
+                        data: [
+                            {{ sheet.concept }},
+                            {{ sheet.theme }},
+                            {{ sheet.story }},
+                            {{ sheet.structure }},
+                            {{ sheet.character }},
+                            {{ sheet.scene }},
+                            {{ sheet.exposition }},
+                            {{ sheet.dialogue }},
+                            ]
+                    },]
+                },
+                options: {
+                    animation:false,
+                    showTooltips: false,
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: true,
+                        fontSize:20,
+                        fontColor:'#666',
+                        text: '{{ sheet.name }}',
+                    },
+                    scale: {
+                        display: true,
+                        pointLabels: {
+                            fontSize: 15,
+                            fontColor: colorSet.orange
+                        },
+                        ticks: {
+                            display: true,
+                            fontSize: 12,
+                            fontColor: colorSet.green,
+                            min: 0,
+                            max: 9,
+                            beginAtZero: true
+                        },
+                        gridLines: {
+                            display: true,
+                            color: colorSet.yellow
+                        }
+                    }
+                }
+            });
+        };
+    </script>

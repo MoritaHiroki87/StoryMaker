@@ -6,11 +6,15 @@ defusedxml==0.5.0
 dj-database-url==0.5.0
 dj-static==0.0.6
 Django==2.1.7
+django-bootstrap4==0.0.8
 django-easy-pdf==0.1.1
+django-filter==2.1.0
 django-toolbelt==0.0.1
 django-weasyprint==0.5.4
+djangorestframework==3.9.4
 gunicorn==19.9.0
 html5lib==1.0.1
+Markdown==3.2.1
 Pillow==6.0.0
 psycopg2==2.7.7
 pycparser==2.19

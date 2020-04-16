@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='slim' %}
+
+
+
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="" />
+    <meta name="roobts" content="noindex, nofollow" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ksheet/general.css' %}">
+    {% block stylesheet %}{% endblock %}
+
+</head>
+<body>
+
+    <header class="container">
+        {% block header %}{% endblock %}
+    </header>
+
+    <hr>
+
+    <div class="container">
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <hr>
+
+    <footer class="container">
+        <div class="col">
+            <div class="card">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                    </li>
+                </ul>
+                {% block footer %}{% endblock %}
+            </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+{% block js %}
+{% endblock %}
+</html>
