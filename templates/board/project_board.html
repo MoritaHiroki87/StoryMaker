@@ -1,42 +1,371 @@
+{% extends 'board/base.html' %}
 
-{% load staticfiles %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <title>project</title>
-    <link rel="stylesheet" href="{% static 'board/project.css' %}" />
-</head>
-<body>
-<div class="project-area">
-    <p>project_name: {{ project.project_name }}</p>
-    <a href="{% url 'board:project_list' %}">プロジェクト切り替え</a>
-</div>
-<div class="card-board-area">
-    <div class="curtain-container">
-        {% for curtain in project.curtain_list %}
-            <div class="curtain-area">
-                <p>{{ curtain.curtain_name }}</p>
-                <p><a class="curtain-edit-btn" href="{% url 'board:edit_curtain' project_id=project.project_id curtain_id=curtain.curtain_id %}">編集</a></p>
-                <p>-----------</p>
-                <div class="card-container">
-                    {% for card in curtain.card_list %}
-                        <p class="card-name">{{ card.card_name }}</p>
-                        <p><a class="card-edit-btn" href="{% url 'board:edit_card' project_id=project.project_id curtain_id=curtain.curtain_id card_id=card.card_id %}">編集</a></p>
-                    {% endfor %}
-                    <p>------------</p>
-                    <p><a class="card-create-btn" href="{% url 'board:create_card' project_id=project.project_id curtain_id=curtain.curtain_id %}">カードの作成</a></p>
-                </div>
-            </div>
-        {% endfor %}
+{% block content %}
 
-            <div class="curtain-area">
-                <a class="curtain-create-btn" href="{% url 'board:create_curtain' project.project_id %}">幕の作成</a>
-            </div>
+    <div class="card-board-area">
+        <v-container class="curtain-container">
+
+            <v-layout row>
+                <v-flex>
+                    <v-card class="">
+                        <v-layout justify-center row>
+
+                                <v-flex xs4 ms3 md2 grow v-for="curtain in project.curtains">
+                                    <v-card class="blue lighten-4">
+                                        <v-card-title class="font-weight-bold">#{ curtain.curtain_name }</v-card-title>
+
+                                        <edit-curtain-form :curtain_id="curtain.id" :project_id="project.id"></edit-curtain-form>
+
+                                        <v-layout justify-center column v-for="card in curtain.cards">
+                                            <v-flex>
+                                                <v-card class="blue lighten-4">
+                                                    <v-card-title class="font-weight-bold mb-0">#{ card.card_name }</v-card-title>
+
+                                                    <edit-card-form :card_id="card.id" :curtain_id="curtain.id"></edit-card-form>
+
+                                                    <form @submit.prevent="deleteCard(card.id, card.card_name, card.card_detail, curtain.id)">
+                                                        <v-btn fab dark small color="indigo" type="submit">
+                                                            <v-icon>delete</v-icon>
+                                                        </v-btn>
+                                                    </form>
+
+                                                </v-card>
+                                            </v-flex>
+                                        </v-layout>
+                                        <create-card-form :curtain_id="curtain.id"></create-card-form>
+                                    </v-card>
+
+                                    <form @submit.prevent="deleteCurtain(curtain.id, curtain.curtain_name)">
+                                        <v-btn fab dark small color="indigo" type="submit">
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                                    </form>
+                                </v-flex>
+
+                        </v-layout>
+
+                        <v-layout justify-center row>
+                            <v-flex xs4 ms4 md4>
+
+                                <form @submit.prevent="createCurtain()">
+                                    <v-text-field outline v-model="form.curtain.name" label="list_name"></v-text-field>
+                                    <v-btn fab dark small color="indigo" type="submit">
+                                        <v-icon>add</v-icon>
+                                    </v-btn>
+                                </form>
+                            </v-flex>
+                        </v-layout>
+
+                    </v-card>
+                </v-flex>
+            </v-layout>
+
+        </v-container>
     </div>
-</div>
 
-</body>
-</html>
+    <v-card>
+        #{ $data }
+    </v-card>
+
+{% endblock %}
+
+{% block vuejs %}
+
+<script>
+
+    // CSRFトークンの送信設定
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+
+    // APIクライアント
+    const api = axios.create({
+        baseURL: '/api/v1/',
+        timeout: 5000,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+
+    // Mustache構文のバッティングを回避
+    Vue.options.delimiters = ['#{', '}']
+
+    // Devtoolの導入
+    Vue.config.devtools = true
+
+    // コンポーネントの作成
+    const EditCardFormComp = {
+        props: ['card_id', 'curtain_id'],
+        template:
+            '<div v-if="isDisplayed === true">' +
+            '<v-btn fab dark small color="indigo" @click="switchDisplay(false)">' +
+            '<v-icon>keyboard_arrow_up</v-icon>' +
+            '</v-btn>' +
+            '<form @submit.prevent="updateCard(card_id, curtain_id)">' +
+            '<v-text-field outline v-model="form.card_name" label="edited_name"></v-text-field>' +
+            '<v-text-field outline v-model="form.card_detail" label="edited_detail"></v-text-field>' +
+            '<v-btn fab dark small color="indigo" type="submit">' +
+            '<v-icon>save</v-icon>' +
+            '</v-btn>' +
+            '</form>' +
+            '</div>' +
+            '<div v-else>' +
+            '<v-btn fab dark small color="indigo" @click="switchDisplay(true)">' +
+            '<v-icon>edit</v-icon>' +
+            '</v-btn>' +
+            '</div>',
+        data: ()=> {
+            return {
+                isDisplayed: false,
+                form: {
+                    card_name: '',
+                    card_detail: ''
+                }
+            }
+        },
+        methods: {
+            switchDisplay: function(booboo){
+                this.isDisplayed = booboo
+            },
+            updateCard: function (card_id, curtain_id) {
+                // 多分ここにvueコンポーネント的な処理
+                api({
+                    method: 'put',
+                    url: 'cards/' + card_id + '/',
+                    data: {
+                        'id': card_id,
+                        'card_name': this.form.card_name,
+                        'card_detail': this.form.card_detail,
+                        'curtain': curtain_id
+                    }
+                })
+                    .then(response => {
+                        console.log('動作確認then')
+                        console.log(response.data)
+                        this.form = response.data
+                    })
+            },
+        }
+    }
+
+
+    const EditCurtainFormComp = {
+        props: ['curtain_id', 'project_id'],
+        template:
+            '<div v-if="isDisplayed === true">' +
+            '<v-btn fab dark small color="indigo" @click="switchDisplay(false)">' +
+            '<v-icon>keyboard_arrow_up</v-icon>' +
+            '</v-btn>' +
+            '<form @submit.prevent="updateCurtain(curtain_id, project_id)">' +
+            '<v-text-field outline v-model="form.curtain_name" label="edited_name"></v-text-field>' +
+            '<v-btn fab dark small color="indigo" type="submit">' +
+            '<v-icon>save</v-icon>' +
+            '</v-btn>' +
+            '</form>' +
+            '</div>' +
+            '<div v-else>' +
+            '<v-btn fab dark small color="indigo" @click="switchDisplay(true)">' +
+            '<v-icon>edit</v-icon>' +
+            '</v-btn>' +
+            '</div>',
+        data: ()=> {
+            return {
+                isDisplayed: false,
+                form: {
+                    curtain_name: ''
+                }
+            }
+        },
+        methods: {
+            switchDisplay: function(booboo){
+                this.isDisplayed = booboo
+            },
+            updateCurtain: function (curtain_id, project_id) {
+                // 多分ここにvueコンポーネント的な処理
+                api({
+                    method: 'put',
+                    url: 'curtains/' + curtain_id + '/',
+                    data: {
+                        'id': curtain_id,
+                        'curtain_name': this.form.curtain_name,
+                        'project': project_id
+                    }
+                })
+                    .then(response => {
+                        console.log('動作確認then')
+                        console.log(response.data)
+                        this.form = response.data
+                    })
+            },
+        }
+    }
+
+    const CreateCardFormComp = {
+        props: ['curtain_id'],
+        template: '<form @submit.prevent="createCard(curtain_id)">' +
+            '<v-text-field outline v-model="form.card.name" label="name"></v-text-field>' +
+            '<v-text-field outline v-model="form.card.detail" label="detail"></v-text-field>' +
+            '<v-btn fab dark small color="indigo" class="ml-0" type="submit">' +
+            '<v-icon>add</v-icon>' +
+            '</v-btn>' +
+            '</form>',
+        data: ()=> {
+            return {
+                form: {
+                    card: {
+                        name: '',
+                        detail: '',
+                        curtain_id: ''
+                    }
+                }
+            }
+        },
+        methods: {
+            // カードの新規作成
+            createCard: function(curtain_id){
+                console.log('this.form.card.curtain_idの型:', typeof this.form.card.curtain_id)
+                console.log('this.form.card.curtain_id:', this.form.card.curtain_id)
+
+                console.log('引数curtain_idの型:', typeof curtain_id)
+                console.log('引数curtain_id:', curtain_id)
+
+                console.log('this.form.card.name:', this.form.card.name)
+                api({
+                    method: 'post',
+                    url: 'cards/',
+                    data: {
+                        'id': this.form.card.id,
+                        'card_name': this.form.card.name,
+                        'card_detail': this.form.card.detail,
+                        'curtain': curtain_id
+                    }
+                })
+                    .then(response => {
+                        console.log('動作確認then')
+                        console.log(response.data)
+                        this.form.card = response.data
+                    })
+            }
+        }
+    }
+
+    // Vueインスタンスの生成
+    const app = new Vue({
+        el: '#app',
+        data: {
+            form: {
+                curtain: {
+                    name: '',
+                    project_id: ''
+                }
+            },
+            project: [{
+                id: '',
+                project_name: '',
+                curtains: [{
+                    id: '',
+                    curtain_name: '',
+                    card: [{
+                        id: '',
+                        card_name: '',
+                        card_detail: ''
+                    }]
+                }]
+            }],
+            message: {
+                info: '',
+                warnings: [],
+                error: ''
+            }
+        },
+        computed: {
+            isCreated: function () {
+                return this.form.curtain.id !== undefined
+            }
+        },
+        methods: {
+            // createCardはコンポーネント化
+            deleteCard: function (card_id, card_name, card_detail, curtain_id) {
+                api({
+                    method: 'delete',
+                    url: 'cards/' + card_id + '/',
+                    data: {
+                        'id': card_id,
+                        'card_name': card_name,
+                        'card_detail': card_detail,
+                        'curtain': curtain_id
+                    }
+                })
+                    .then(response => {
+
+                    })
+            },
+
+            createCurtain: function(){
+                api({
+                    method: 'post',
+                    url: 'curtains/',
+                    data: {
+                        'id': this.form.curtain.id,
+                        'curtain_name': this.form.curtain.name,
+                        'project': this.project.id
+                    }
+                })
+                    .then(response => {
+                        console.log('curtainの作成に成功')
+                        console.log(response.data)
+                        this.form.curtain = response.data
+                    })
+            },
+            deleteCurtain: function (curtain_id, curtain_name) {
+                api({
+                    method: 'delete',
+                    url: 'curtains/' + curtain_id + '/',
+                    data: {
+                        'id': curtain_id,
+                        'curtain_name': curtain_name,
+                        'project': this.project.id
+                    }
+                })
+                    .then(response => {
+                        console.log('curtainの削除に成功')
+                        console.log(response.data)
+                    })
+            },
+        },
+        mounted: function () {
+            api({
+                method: 'get',
+                // @@ 苦肉の策すぎる
+                url: 'projects/' + '{{ project.project_id }}' + '/',
+            })
+                .then(response => {
+                    this.project = response.data
+                })
+                .catch(response => {
+                    console.log(response)
+                })
+        },
+        updated: function () {
+            api({
+                method: 'get',
+                // @@ 苦肉の策すぎる
+                url: 'projects/' + '{{ project.project_id }}' + '/',
+            })
+                .then(response => {
+                    this.project = response.data
+                })
+                .catch(response => {
+                    console.log(response)
+                })
+        },
+        components: {
+            'create-card-form': CreateCardFormComp,
+            'edit-card-form': EditCardFormComp,
+            'edit-curtain-form': EditCurtainFormComp,
+        }
+    })
+
+</script>
+
+{% endblock %}

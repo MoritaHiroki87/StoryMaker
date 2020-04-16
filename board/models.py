@@ -1,4 +1,6 @@
+import uuid
 from django.db import models
+from django.utils import timezone
 
 
 # Create your models here.
@@ -13,6 +15,7 @@ class Project(models.Model):
     class Meta:
         db_table = "project"
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     project_name = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,7 +32,8 @@ class Curtain(models.Model):
     project:プロジェクト
     curtain_name:幕名
     """
-    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE, related_name='curtains')
     curtain_name = models.CharField(max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,7 +49,8 @@ class Card(models.Model):
     created_at:作成日時
     updated_at:更新日時
     """
-    curtain = models.ForeignKey(Curtain, null=True, blank=True, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    curtain = models.ForeignKey(Curtain, null=True, blank=True, on_delete=models.CASCADE, related_name='cards')
     card_name = models.CharField(max_length=32)
     card_detail = models.TextField()
     order = models.IntegerField(default=1)

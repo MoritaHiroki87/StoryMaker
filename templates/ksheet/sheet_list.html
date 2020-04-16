@@ -1,0 +1,35 @@
+{% extends "ksheet/base.html" %}
+{% load static %}
+{% block title %}
+subwaypkpk評価シート
+{% endblock %} |
+
+
+{% block stylesheet %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <h3>有償版表示</h3>
+    <ul class="list-group">
+        {% for sheet in object_list %}
+            <li class="list-group-item"><a href="{% url 'ksheet:sheet_detail' sheet.pk %}">{{ sheet.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <h3>無償版表示</h3>
+    <ul class="list-group">
+        {% for sheet in object_list %}
+            <li class="list-group-item"><a href="{% url 'ksheet:trial_sheet_detail' sheet.pk %}">{{ sheet.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <h3>募集要項</h3>
+    <a href="{% url 'ksheet:recruit' %}">募集要項ページ</a>
+
+{% endblock %}
+
+{% block js %}
+{% endblock %}
