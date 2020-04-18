@@ -7,7 +7,7 @@ from .models import *
 class SheetAdmin(admin.ModelAdmin):
     list_display = ["name", "author",]
     list_display_links = ["name", ]
-    fields = ("name", "author", "course", "page_count",
+    fields = ("name", "author", "appraiser", "course", "page_count",
               ("concept", "concept_comment"),
               ("theme", "theme_comment"),
               ("story", "story_comment"),

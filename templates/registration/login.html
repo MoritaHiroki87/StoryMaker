@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}ログイン{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <p>ログイン済みです</p>
+    {% else %}
+        <h2>ログイン</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">ログイン</button>
+        </form>
+    {% endif %}
+{% endblock %}

@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from  markdown import markdown
+from users.models import User
 
 
 # Create your models here.
@@ -26,13 +27,14 @@ class Sheet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # 基本情報
-    name = models.CharField(max_length=32)
-    author = models.CharField(max_length=32)
+    name = models.CharField(verbose_name="作品名", max_length=32)
+    author = models.CharField(verbose_name="作者", max_length=32)
+    appraiser = models.ForeignKey(User, verbose_name="評価者", on_delete=models.CASCADE)
     course = models.CharField(choices=COURSE_LIST, max_length=2)
     # 作品詳細情報
     page_count = models.IntegerField()
     # 評価項目 独創力、共感、印象が他にも。。
-    concept = models.IntegerField(verbose_name="コンセプト", choices=ASSESSMENT_POINT_LIST, default=5, ) # 印象でもいいかも独創力もここでも。
+    concept = models.IntegerField(verbose_name="コンセプト", choices=ASSESSMENT_POINT_LIST, default=5) # 印象でもいいかも独創力もここでも。
     theme = models.IntegerField(verbose_name="テーマ", choices=ASSESSMENT_POINT_LIST, default=5) # これどうだろうな
     story = models.IntegerField(verbose_name="ストーリー", choices=ASSESSMENT_POINT_LIST, default=5) # 元は物語、共感？
     structure = models.IntegerField(verbose_name="構成", choices=ASSESSMENT_POINT_LIST, default=5)

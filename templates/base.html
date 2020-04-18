@@ -26,7 +26,14 @@
 <body>
 
     <header class="container">
-        {% block header %}{% endblock %}
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" class="logout">Logout</a></li>
+        {% else %}
+            <!-- <li><a href=" url 'accounts:signup' %}" class="signup">Sign up</a></li> django前カッコを削除済み -->
+            <li><a href="{% url 'login' %}" class="login">Login</a></li>
+        {% endif %}
+        {% block header %}
+        {% endblock %}
     </header>
 
     <hr>

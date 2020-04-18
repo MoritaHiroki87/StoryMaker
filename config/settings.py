@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # My Applications
     # 'board.apps.BoardConfig',
     # 'apiv1.apps.Apiv1Config',
+    'users.apps.UsersConfig',
     'ksheet.apps.KsheetConfig',
     # 3rd party apps
     'bootstrap4',
@@ -155,3 +156,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+
+###################
+# Authentication #
+##################
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = 'ksheet:sheet_list'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = 'ksheet:sheet_list'

@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('ksheet.urls')),
     # path('', include('board.urls')),
     # path('api/v1/', include('apiv1.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
