@@ -1,7 +1,9 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from .models import User
+from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin
+from django.utils.translation import gettext, gettext_lazy as _
 
-admin.site.register(User, UserAdmin)
 
-
+@admin.register(User)
+class AdminUserAdmin(UserAdmin):
+    pass
